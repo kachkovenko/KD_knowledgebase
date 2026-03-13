@@ -2,7 +2,7 @@
   "name": "Презентации — База знаний",
   "short_name": "Презентации",
   "description": "Шпаргалка по созданию презентаций и работе с PowerPoint",
-  "start_url": "/PWA_Knowledge_Database/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#eef1f6",
   "theme_color": "#a674fe",
