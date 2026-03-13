@@ -234,6 +234,11 @@ body {
   text-align: left;
 }
 
+.hero-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
 .hero h1 {
   font-size: 28px;
   font-weight: 700;
@@ -245,7 +250,6 @@ body {
   font-size: 15px;
   opacity: 0.9;
   max-width: 480px;
-  margin: 0 auto;
 }
 
 /* === Search === */
@@ -592,6 +596,86 @@ body {
 
 .install-btn:hover {
   background: var(--primary-hover);
+}
+
+/* === Share Button === */
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--surface);
+  color: var(--primary);
+  border-radius: 30px;
+  border: none;
+  text-decoration: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.share-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.share-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sidebar-share {
+  padding: 12px 20px;
+}
+
+.sidebar-share .share-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 10px 16px;
+  font-size: 14px;
+  background: var(--bg);
+}
+
+/* === Install Hint (iOS) === */
+.install-hint {
+  display: none;
+  max-width: 720px;
+  margin: 16px auto 0;
+  padding: 0 20px;
+}
+
+.install-hint.visible {
+  display: block;
+}
+
+.install-hint-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  box-shadow: var(--shadow);
+  gap: 12px;
+}
+
+.install-hint-inner p {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+.install-hint-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--text-light);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
 }
 
 /* === Responsive === */
