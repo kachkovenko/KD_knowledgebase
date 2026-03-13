@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Презентации — База знаний</title>
+  <meta name="description" content="Шпаргалка по созданию презентаций и работе с PowerPoint">
+  <meta name="theme-color" content="#a674fe">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Презентации">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="./" class="logo">Презентации<span>.</span></a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>База знаний</h1>
+    <p>Ответы на частые вопросы по PowerPoint и созданию презентаций</p>
+  </section>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search" placeholder="Поиск по базе знаний..." autocomplete="off">
+      <button class="search-clear" id="search-clear" aria-label="Очистить">&times;</button>
+    </div>
+  </div>
+
+  <!-- Install Banner -->
+  <div class="install-banner" id="install-banner">
+    <div class="install-banner-inner">
+      <p>Установите приложение для быстрого доступа</p>
+      <button class="install-btn" id="install-btn">Установить</button>
+    </div>
+  </div>
+
+  <!-- Category Navigation -->
+  <nav class="category-nav" id="category-nav"></nav>
+
+  <!-- FAQ Content -->
+  <main class="content" id="content"></main>
+
+  <!-- No Results -->
+  <div class="no-results" id="no-results">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+    <p>Ничего не найдено. Попробуйте другой запрос.</p>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img src="" alt="" id="lightbox-img">
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <a href="https://kachkovenko.com" target="_blank" rel="noopener">kachkovenko.com</a>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
