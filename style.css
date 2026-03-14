@@ -43,7 +43,7 @@ body {
   right: 0;
   z-index: 100;
   background: transparent;
-  padding: 16px 20px;
+  padding: 16px 0;
   transform: translateY(0);
   transition: background 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
 }
@@ -231,7 +231,7 @@ body {
 .hero {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: #fff;
-  padding: 72px 20px 40px;
+  padding: 72px 0 40px;
   text-align: left;
 }
 
@@ -686,7 +686,7 @@ body {
     font-size: 36px;
   }
   .hero {
-    padding: 64px 20px 52px;
+    padding: 64px 0 52px;
   }
   .search-wrap {
     margin-top: -28px;
