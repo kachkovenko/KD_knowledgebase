@@ -18,6 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Playfair+Display+SC:wght@400;700&family=Source+Sans+3:wght@400&family=Merriweather:wght@400;700&family=Merriweather+Sans:wght@400;700&family=Open+Sans:wght@400&family=Lora:wght@700&family=Inter:wght@400&family=PT+Serif:wght@700&family=PT+Sans:wght@400&family=Montserrat:wght@700&family=Raleway:wght@700&family=Lato:wght@400&family=Manrope:wght@700&family=Nunito:wght@700&family=Work+Sans:wght@400&family=Space+Grotesk:wght@700&family=DM+Sans:wght@400&family=Comfortaa:wght@700&family=Unica+One&family=Vollkorn:wght@400&family=Oswald:wght@700&family=Philosopher:wght@700&family=Mulish:wght@400&family=Yeseva+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -56,56 +57,118 @@
     <div class="sidebar-links" id="sidebar-links"></div>
   </nav>
 
-  <!-- Search -->
-  <div class="search-wrap">
-    <div class="search-box">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="search" placeholder="Поиск по базе знаний..." autocomplete="off">
-      <button class="search-clear" id="search-clear" aria-label="Очистить">&times;</button>
+  <!-- === Tab: FAQ === -->
+  <div class="tab-panel active" id="tab-faq">
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search" placeholder="Поиск по базе знаний..." autocomplete="off">
+        <button class="search-clear" id="search-clear" aria-label="Очистить">&times;</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Install Banner (Android) -->
-  <div class="install-banner" id="install-banner">
-    <div class="install-banner-inner">
-      <p>Установите приложение для быстрого доступа</p>
-      <button class="install-btn" id="install-btn">Установить</button>
+    <!-- Install Banner (Android) -->
+    <div class="install-banner" id="install-banner">
+      <div class="install-banner-inner">
+        <p>Установите приложение для&nbsp;быстрого доступа</p>
+        <button class="install-btn" id="install-btn">Установить</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Install Hint (iOS Safari) -->
-  <div class="install-hint" id="install-hint">
-    <div class="install-hint-inner">
-      <p>Нажмите <strong>«Поделиться»</strong> → <strong>«На экран Домой»</strong>, чтобы установить приложение</p>
-      <button class="install-hint-close" id="install-hint-close" aria-label="Закрыть">&times;</button>
+    <!-- Install Hint (iOS Safari) -->
+    <div class="install-hint" id="install-hint">
+      <div class="install-hint-inner">
+        <p>Нажмите <strong>«Поделиться»</strong> → <strong>«На&nbsp;экран Домой»</strong>, чтобы установить приложение</p>
+        <button class="install-hint-close" id="install-hint-close" aria-label="Закрыть">&times;</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Category nav removed, using sidebar instead -->
-  <nav class="category-nav" id="category-nav" style="display:none"></nav>
+    <!-- Category nav removed, using sidebar instead -->
+    <nav class="category-nav" id="category-nav" style="display:none"></nav>
 
-  <!-- FAQ Content -->
-  <main class="content" id="content"></main>
+    <!-- FAQ Content -->
+    <main class="content" id="content"></main>
 
-  <!-- No Results -->
-  <div class="no-results" id="no-results">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-    <p>Ничего не найдено. Попробуйте другой запрос.</p>
-  </div>
+    <!-- No Results -->
+    <div class="no-results" id="no-results">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      <p>Ничего не найдено. Попробуйте другой запрос.</p>
+    </div>
 
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox">
-    <img src="" alt="" id="lightbox-img">
-  </div>
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+      <img src="" alt="" id="lightbox-img">
+    </div>
+
+  </div><!-- /tab-faq -->
+
+  <!-- === Tab: Checklist === -->
+  <div class="tab-panel" id="tab-checklist">
+    <section class="hero" id="hero-checklist">
+      <div class="hero-inner">
+        <h1>Чеклист</h1>
+        <p>Проверьте, всё&nbsp;ли учтено в&nbsp;вашей презентации</p>
+      </div>
+    </section>
+    <div class="tab-page">
+      <div class="checklist" id="checklist">
+        <label class="checklist-item"><input type="checkbox" data-index="0"><span>Тема презентации на&nbsp;первом слайде сформулирована коротко и&nbsp;понятно</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="1"><span>На&nbsp;слайдах выделена основная мысль (цифра, вывод)</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="2"><span>Цветовое оформление соответствует фирменному стилю (если презентация о&nbsp;бренде)</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="3"><span>В&nbsp;презентации использован фирменный шрифт бренда (если применимо)</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="4"><span>Поля по&nbsp;краям слайда одинаковы во&nbsp;всей презентации</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="5"><span>На&nbsp;слайдах достаточно «воздуха»</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="6"><span>Размер шрифта подобран соответственно условиям, в&nbsp;которых будет использоваться презентация</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="7"><span>Заголовки находятся на&nbsp;одном уровне и&nbsp;их&nbsp;верхняя граница не&nbsp;скачет от&nbsp;слайда к&nbsp;слайду</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="8"><span>Фотографии хорошего качества, без&nbsp;пикселей, водяных знаков</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="9"><span>Фотографии не&nbsp;мешают считывать текст, основную идею слайда</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="10"><span>Анимация (если есть) делает слайды понятнее, не&nbsp;перегружает их&nbsp;и&nbsp;не&nbsp;отвлекает внимание</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="11"><span>Большие объёмы текста разделены на&nbsp;абзацы (только для&nbsp;презентаций под&nbsp;рассылку)</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="12"><span>На&nbsp;слайдах с&nbsp;большим количеством данных все блоки визуально отделены друг от&nbsp;друга</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="13"><span>Понятно&nbsp;ли, какие действия ждут от&nbsp;аудитории после прочтения/выступления?</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="14"><span>Стиль иконок единообразный (outline или filled, один набор)</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="15"><span>Текст читаем на&nbsp;всех фонах, достаточный контраст (особенно на&nbsp;фотографиях)</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="16"><span>Проверена орфография и&nbsp;пунктуация</span></label>
+        <label class="checklist-item"><input type="checkbox" data-index="17"><span>Если презентация длинная&nbsp;— есть оглавление или навигация для&nbsp;аудитории</span></label>
+      </div>
+      <div class="checklist-actions">
+        <span class="checklist-counter" id="checklist-counter">0 из 18</span>
+        <button class="checklist-clear-btn" id="checklist-clear">Очистить</button>
+      </div>
+    </div>
+  </div><!-- /tab-checklist -->
+
+  <!-- === Tab: Fonts === -->
+  <div class="tab-panel" id="tab-fonts">
+    <section class="hero" id="hero-fonts">
+      <div class="hero-inner">
+        <h1>Шрифтовые пары</h1>
+        <p>Проверенные сочетания из&nbsp;Google&nbsp;Fonts для&nbsp;ваших презентаций</p>
+      </div>
+    </section>
+    <div class="tab-page" id="font-pairs-content"></div>
+  </div><!-- /tab-fonts -->
+
+  <!-- === Tab: Inspiration === -->
+  <div class="tab-panel" id="tab-inspiration">
+    <div class="tab-page">
+      <div class="tab-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="tab-placeholder-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <p class="tab-placeholder-text">Скоро здесь будет много&nbsp;интересного</p>
+      </div>
+    </div>
+  </div><!-- /tab-inspiration -->
 
   <!-- Contacts Section -->
   <section class="contacts-section" id="contacts">
     <div class="contacts-inner">
       <h2 class="contacts-title">Остались вопросы?</h2>
-      <p class="contacts-text">Напишите мне в Телеграм — помогу разобраться</p>
+      <p class="contacts-text">Напишите мне в&nbsp;Телеграм&nbsp;— помогу разобраться</p>
       <a href="https://t.me/maxkachkovenko" target="_blank" rel="noopener" class="contacts-btn">
         <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.492-1.302.48-.428-.013-1.252-.242-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-        Написать в Телеграм
+        Написать в&nbsp;Телеграм
       </a>
     </div>
   </section>
@@ -124,6 +187,26 @@
   <footer class="footer">
     <a href="https://kachkovenko.com" target="_blank" rel="noopener">kachkovenko.com</a>
   </footer>
+
+  <!-- Bottom Tab Bar -->
+  <nav class="tab-bar" id="tab-bar">
+    <button class="tab-bar-item active" data-tab="faq">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span>База знаний</span>
+    </button>
+    <button class="tab-bar-item" data-tab="checklist">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span>Чеклист</span>
+    </button>
+    <button class="tab-bar-item" data-tab="fonts">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+      <span>Шрифты</span>
+    </button>
+    <button class="tab-bar-item" data-tab="inspiration">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span>Вдохновение</span>
+    </button>
+  </nav>
 
   <script src="app.js"></script>
 </body>

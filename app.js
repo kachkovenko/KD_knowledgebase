@@ -226,8 +226,14 @@ let activeCategory = null;
 
 /* === Sticky Header on Scroll === */
 function updateHeader() {
-  const searchBottom = searchWrap.getBoundingClientRect().bottom;
-  header.classList.toggle('pinned', searchBottom < 0);
+  // Find the visible hero to determine pin point
+  const visibleHero = mainHero.style.display !== 'none' ? mainHero :
+    (checklistHero && checklistHero.style.display !== 'none' ? checklistHero :
+    (fontsHero && fontsHero.style.display !== 'none' ? fontsHero : null));
+  if (visibleHero) {
+    const heroBottom = visibleHero.getBoundingClientRect().bottom;
+    header.classList.toggle('pinned', heroBottom < 56);
+  }
 }
 
 window.addEventListener('scroll', updateHeader, { passive: true });
@@ -492,6 +498,210 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+/* === Tab Bar Navigation === */
+const tabBar = document.getElementById('tab-bar');
+const tabItems = tabBar.querySelectorAll('.tab-bar-item');
+const tabPanels = document.querySelectorAll('.tab-panel');
+const mainHero = document.querySelector('.header + .hero');
+const checklistHero = document.getElementById('hero-checklist');
+const fontsHero = document.getElementById('hero-fonts');
+
+function switchTab(tabId) {
+  // Update tab bar
+  tabItems.forEach(item => {
+    item.classList.toggle('active', item.dataset.tab === tabId);
+  });
+
+  // Update panels
+  tabPanels.forEach(panel => {
+    panel.classList.toggle('active', panel.id === 'tab-' + tabId);
+  });
+
+  // Show/hide hero and burger depending on tab
+  const isFaq = tabId === 'faq';
+  const hasHero = tabId === 'faq' || tabId === 'checklist' || tabId === 'fonts';
+  mainHero.style.display = isFaq ? '' : 'none';
+  menuToggle.style.visibility = isFaq ? '' : 'hidden';
+  headerSearchBtn.style.display = 'none';
+
+  // Tab-specific heroes
+  if (checklistHero) checklistHero.style.display = tabId === 'checklist' ? '' : 'none';
+  if (fontsHero) fontsHero.style.display = tabId === 'fonts' ? '' : 'none';
+
+  if (hasHero) {
+    header.classList.remove('pinned');
+    updateHeader();
+  } else {
+    header.classList.add('pinned');
+  }
+
+  // Scroll to top
+  window.scrollTo({ top: 0 });
+}
+
+tabBar.addEventListener('click', (e) => {
+  const item = e.target.closest('.tab-bar-item');
+  if (!item) return;
+  switchTab(item.dataset.tab);
+});
+
+/* === Checklist === */
+const checklistEl = document.getElementById('checklist');
+const checklistCounter = document.getElementById('checklist-counter');
+const checklistClearBtn = document.getElementById('checklist-clear');
+const CHECKLIST_KEY = 'checklist-state';
+
+function loadChecklist() {
+  const saved = JSON.parse(localStorage.getItem(CHECKLIST_KEY) || '[]');
+  const checkboxes = checklistEl.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(cb => {
+    const idx = parseInt(cb.dataset.index);
+    if (saved.includes(idx)) {
+      cb.checked = true;
+      cb.closest('.checklist-item').classList.add('checked');
+    }
+  });
+  updateChecklistCounter();
+}
+
+function saveChecklist() {
+  const checked = [];
+  checklistEl.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+    checked.push(parseInt(cb.dataset.index));
+  });
+  localStorage.setItem(CHECKLIST_KEY, JSON.stringify(checked));
+  updateChecklistCounter();
+}
+
+function updateChecklistCounter() {
+  const total = checklistEl.querySelectorAll('input[type="checkbox"]').length;
+  const checked = checklistEl.querySelectorAll('input[type="checkbox"]:checked').length;
+  checklistCounter.textContent = checked + ' из ' + total;
+}
+
+checklistEl.addEventListener('change', (e) => {
+  if (e.target.type === 'checkbox') {
+    e.target.closest('.checklist-item').classList.toggle('checked', e.target.checked);
+    saveChecklist();
+  }
+});
+
+checklistClearBtn.addEventListener('click', () => {
+  checklistEl.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.checked = false;
+    cb.closest('.checklist-item').classList.remove('checked');
+  });
+  localStorage.removeItem(CHECKLIST_KEY);
+  updateChecklistCounter();
+});
+
+loadChecklist();
+
+/* === Font Pairs === */
+const fontPairsData = [
+  {
+    category: 'Классика',
+    description: 'Serif + Sans-serif\u00a0— проверенные временем сочетания',
+    pairs: [
+      { heading: 'Playfair Display', body: 'Source Sans 3', style: 'Элегантный контраст\u00a0— идеально для\u00a0корпоративных и\u00a0брендовых презентаций' },
+      { heading: 'Merriweather', body: 'Open Sans', style: 'Тёплое и\u00a0читаемое сочетание\u00a0— отлично для\u00a0образовательных материалов' },
+      { heading: 'Lora', body: 'Inter', style: 'Утончённый и\u00a0современный\u00a0— хорош для\u00a0аналитических отчётов' },
+      { heading: 'PT Serif', body: 'PT Sans', style: 'Одно семейство\u00a0— гарантированная гармония, отличная кириллица' },
+      { heading: 'Playfair Display', body: 'Playfair Display SC', style: 'Заголовок + капитель\u00a0— изысканное единообразие для\u00a0премиальных материалов' },
+      { heading: 'Unica One', body: 'Vollkorn', style: 'Сжатый декоративный + классическая антиква\u00a0— для\u00a0афиш и\u00a0обложек' }
+    ]
+  },
+  {
+    category: 'Современные',
+    description: 'Sans + Sans\u00a0— чистый и\u00a0минималистичный стиль',
+    pairs: [
+      { heading: 'Montserrat', body: 'Open Sans', style: 'Универсальная пара\u00a0— подходит для\u00a0любых задач' },
+      { heading: 'Raleway', body: 'Lato', style: 'Лёгкий и\u00a0воздушный\u00a0— отлично для\u00a0стартапов и\u00a0digital-проектов' },
+      { heading: 'Manrope', body: 'Inter', style: 'Геометричный и\u00a0строгий\u00a0— для\u00a0технологичных и\u00a0IT-презентаций' },
+      { heading: 'Nunito', body: 'Work Sans', style: 'Мягкий и\u00a0дружелюбный\u00a0— для\u00a0неформальных и\u00a0HR-презентаций' },
+      { heading: 'Merriweather Sans', body: 'Merriweather', style: 'Одно семейство\u00a0— sans для\u00a0заголовков, serif для\u00a0текста, идеальная гармония' },
+      { heading: 'Oswald', body: 'Playfair Display', style: 'Сжатый гротеск + элегантная антиква\u00a0— сильный визуальный контраст' }
+    ]
+  },
+  {
+    category: 'Выразительные',
+    description: 'Яркие пары для\u00a0креативных проектов',
+    pairs: [
+      { heading: 'Space Grotesk', body: 'DM Sans', style: 'Футуристичный\u00a0— для\u00a0инноваций, технологий, продуктовых презентаций' },
+      { heading: 'Comfortaa', body: 'Open Sans', style: 'Округлый и\u00a0дружелюбный\u00a0— для\u00a0детских, lifestyle и\u00a0wellness-проектов' },
+      { heading: 'Yeseva One', body: 'Merriweather Sans', style: 'Декоративный serif + чистый sans\u00a0— для\u00a0ярких заголовков и\u00a0событий' },
+      { heading: 'Philosopher', body: 'Mulish', style: 'Характерный + нейтральный\u00a0— для\u00a0культурных и\u00a0образовательных проектов' }
+    ]
+  }
+];
+
+function renderFontPairs() {
+  const container = document.getElementById('font-pairs-content');
+  if (!container) return;
+  container.innerHTML = '';
+
+  // Info banner
+  const info = document.createElement('div');
+  info.className = 'font-info';
+  info.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><p>Нажмите «Поделиться», чтобы отправить ссылку на&nbsp;скачивание шрифтов себе на&nbsp;почту</p>';
+  container.appendChild(info);
+
+  fontPairsData.forEach(group => {
+    const section = document.createElement('div');
+    section.className = 'font-section';
+    section.innerHTML = `<h2 class="category-title">${group.category}</h2><p class="font-section-desc">${group.description}</p>`;
+
+    group.pairs.forEach(pair => {
+      const headingFamily = pair.heading.replace(/ /g, '+');
+      const bodyFamily = pair.body.replace(/ /g, '+');
+      const fontsUrl = 'https://fonts.google.com/share?selection.family=' + headingFamily + '|' + bodyFamily;
+      const shareText = pair.heading + ' + ' + pair.body + '\n' + fontsUrl;
+
+      const card = document.createElement('div');
+      card.className = 'font-card';
+      card.innerHTML =
+        '<div class="font-card-preview">' +
+          '<p class="font-card-heading" style="font-family:\'' + pair.heading + '\',serif">Создавайте презентации с\u00a0уверенностью</p>' +
+          '<p class="font-card-body" style="font-family:\'' + pair.body + '\',sans-serif">Хорошая типографика\u00a0— основа любой презентации. Правильно подобранные шрифты делают слайды читаемыми и\u00a0профессиональными.</p>' +
+        '</div>' +
+        '<div class="font-card-info">' +
+          '<div class="font-card-names">' +
+            '<span class="font-card-label">Заголовок</span> <strong>' + pair.heading + '</strong>' +
+            '<span class="font-card-separator">+</span>' +
+            '<span class="font-card-label">Текст</span> <strong>' + pair.body + '</strong>' +
+          '</div>' +
+          '<p class="font-card-style">' + pair.style + '</p>' +
+          '<div class="font-card-actions">' +
+            '<a href="' + fontsUrl + '" target="_blank" rel="noopener" class="font-card-link">Открыть в Google Fonts</a>' +
+            '<button class="font-card-share" data-text="' + shareText.replace(/"/g, '&quot;') + '">Поделиться</button>' +
+          '</div>' +
+        '</div>';
+      section.appendChild(card);
+    });
+
+    container.appendChild(section);
+  });
+
+  // Share buttons
+  container.addEventListener('click', (e) => {
+    const btn = e.target.closest('.font-card-share');
+    if (!btn) return;
+    const text = btn.dataset.text;
+    if (navigator.share) {
+      navigator.share({ title: 'Шрифтовая пара', text: text }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Скопировано!';
+        setTimeout(() => { btn.textContent = 'Поделиться'; }, 2000);
+      });
+    }
+  });
+}
+
+renderFontPairs();
+
 /* === Init === */
+if (checklistHero) checklistHero.style.display = 'none';
+if (fontsHero) fontsHero.style.display = 'none';
 renderSidebarLinks();
 render();
