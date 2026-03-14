@@ -693,7 +693,7 @@ body {
   display: flex;
   background: var(--surface);
   border-top: 1px solid var(--border);
-  padding: 6px 0 calc(10px + env(safe-area-inset-bottom, 0));
+  padding: 8px 0 calc(12px + env(safe-area-inset-bottom, 8px));
 }
 
 .tab-bar-item {
