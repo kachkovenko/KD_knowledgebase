@@ -656,17 +656,20 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--surface);
+  background: #e84d5e;
   border-radius: var(--radius);
   padding: 14px 20px;
-  box-shadow: var(--shadow);
   gap: 12px;
 }
 
 .install-hint-inner p {
   font-size: 14px;
-  color: var(--text-light);
+  color: #fff;
   line-height: 1.5;
+}
+
+.install-hint-inner p strong {
+  color: #fff;
 }
 
 .install-hint-close {
@@ -674,7 +677,7 @@ body {
   background: none;
   border: none;
   font-size: 20px;
-  color: var(--text-light);
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
   padding: 4px;
   line-height: 1;
