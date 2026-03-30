@@ -252,7 +252,7 @@ body {
 .hero p {
   font-size: 15px;
   opacity: 0.9;
-  max-width: 480px;
+  max-width: 360px;
 }
 
 /* === Search === */
