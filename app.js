@@ -1,4 +1,4 @@
-const APP_VERSION = '1.0.2';
+const APP_VERSION = '1.0.3';
 
 /* === FAQ Data === */
 const faqData = [
@@ -506,36 +506,32 @@ if (updateBtn) {
       return;
     }
     updateBtn.disabled = true;
-    swRegistration.update().then(() => {
-      const waiting = swRegistration.waiting;
-      if (waiting) {
-        waiting.postMessage({ type: 'SKIP_WAITING' });
-        return;
-      }
-      const installing = swRegistration.installing;
-      if (installing) {
-        installing.addEventListener('statechange', () => {
-          if (installing.state === 'installed') {
-            installing.postMessage({ type: 'SKIP_WAITING' });
-          }
-        });
-        return;
-      }
-      // no new SW found — wait briefly for updatefound
-      const timeout = setTimeout(() => {
-        showToast('Вы используете актуальную версию приложения');
-        updateBtn.disabled = false;
-      }, 3000);
-      swRegistration.addEventListener('updatefound', () => {
-        clearTimeout(timeout);
-        const newWorker = swRegistration.installing;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed') {
-            newWorker.postMessage({ type: 'SKIP_WAITING' });
-          }
-        });
-      }, { once: true });
-    }).catch(() => {
+
+    // already waiting from a previous update
+    if (swRegistration.waiting) {
+      swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      return;
+    }
+
+    // listen for new SW BEFORE triggering update to avoid race condition
+    const timeout = setTimeout(() => {
+      showToast('Вы используете актуальную версию приложения');
+      updateBtn.disabled = false;
+    }, 5000);
+
+    swRegistration.addEventListener('updatefound', () => {
+      clearTimeout(timeout);
+      const newWorker = swRegistration.installing;
+      if (!newWorker) return;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed') {
+          newWorker.postMessage({ type: 'SKIP_WAITING' });
+        }
+      });
+    }, { once: true });
+
+    swRegistration.update().catch(() => {
+      clearTimeout(timeout);
       showToast('Вы используете актуальную версию приложения');
       updateBtn.disabled = false;
     });
