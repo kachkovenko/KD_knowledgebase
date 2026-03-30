@@ -1,3 +1,5 @@
+const APP_VERSION = '1.0.1';
+
 /* === FAQ Data === */
 const faqData = [
   {
@@ -471,9 +473,73 @@ function shareApp() {
 }
 if (shareBtn) shareBtn.addEventListener('click', shareApp);
 
-/* === Service Worker === */
+/* === Service Worker & Version === */
+const versionLabel = document.getElementById('app-version');
+const updateBtn = document.getElementById('update-btn');
+const updateToast = document.getElementById('update-toast');
+
+if (versionLabel) versionLabel.textContent = 'v' + APP_VERSION;
+
+let swRegistration = null;
+
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js');
+  navigator.serviceWorker.register('./sw.js').then(reg => {
+    swRegistration = reg;
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    showToast('Приложение обновлено');
+  });
+}
+
+function showToast(msg) {
+  if (!updateToast) return;
+  updateToast.textContent = msg;
+  updateToast.classList.add('visible');
+  setTimeout(() => updateToast.classList.remove('visible'), 3000);
+}
+
+if (updateBtn) {
+  updateBtn.addEventListener('click', () => {
+    if (!swRegistration) {
+      showToast('Вы используете актуальную версию приложения');
+      return;
+    }
+    updateBtn.disabled = true;
+    swRegistration.update().then(() => {
+      const waiting = swRegistration.waiting;
+      if (waiting) {
+        waiting.postMessage({ type: 'SKIP_WAITING' });
+        return;
+      }
+      const installing = swRegistration.installing;
+      if (installing) {
+        installing.addEventListener('statechange', () => {
+          if (installing.state === 'installed') {
+            installing.postMessage({ type: 'SKIP_WAITING' });
+          }
+        });
+        return;
+      }
+      // no new SW found — wait briefly for updatefound
+      const timeout = setTimeout(() => {
+        showToast('Вы используете актуальную версию приложения');
+        updateBtn.disabled = false;
+      }, 3000);
+      swRegistration.addEventListener('updatefound', () => {
+        clearTimeout(timeout);
+        const newWorker = swRegistration.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed') {
+            newWorker.postMessage({ type: 'SKIP_WAITING' });
+          }
+        });
+      }, { once: true });
+    }).catch(() => {
+      showToast('Вы используете актуальную версию приложения');
+      updateBtn.disabled = false;
+    });
+  });
 }
 
 /* === Lightbox for images === */

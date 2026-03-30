@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ppt-kb-v5';
+const CACHE_NAME = 'ppt-kb-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -21,6 +21,12 @@ self.addEventListener('activate', (event) => {
     )
   );
   self.clients.claim();
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('fetch', (event) => {
