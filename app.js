@@ -1,4 +1,4 @@
-const APP_VERSION = '1.1.15';
+const APP_VERSION = '1.1.16';
 
 /* === FAQ Data === */
 const faqData = [
@@ -480,6 +480,11 @@ const updateToast = document.getElementById('update-toast');
 
 if (versionLabel) versionLabel.textContent = 'v' + APP_VERSION;
 
+if (sessionStorage.getItem('sw-updated')) {
+  sessionStorage.removeItem('sw-updated');
+  setTimeout(() => showToast('Приложение обновлено до v' + APP_VERSION), 500);
+}
+
 let swRegistration = null;
 
 if ('serviceWorker' in navigator) {
@@ -488,7 +493,8 @@ if ('serviceWorker' in navigator) {
   });
 
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    showToast('Приложение обновлено');
+    sessionStorage.setItem('sw-updated', '1');
+    location.reload();
   });
 }
 
