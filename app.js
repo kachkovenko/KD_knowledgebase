@@ -1,4 +1,4 @@
-const APP_VERSION = '1.0.3';
+const APP_VERSION = '1.1.14';
 
 /* === FAQ Data === */
 const faqData = [
@@ -567,6 +567,7 @@ const tabPanels = document.querySelectorAll('.tab-panel');
 const mainHero = document.querySelector('.header + .hero');
 const checklistHero = document.getElementById('hero-checklist');
 const fontsHero = document.getElementById('hero-fonts');
+const palettesHero = document.getElementById('hero-palettes');
 
 function switchTab(tabId) {
   // Update tab bar
@@ -581,7 +582,7 @@ function switchTab(tabId) {
 
   // Show/hide hero and burger depending on tab
   const isFaq = tabId === 'faq';
-  const hasHero = tabId === 'faq' || tabId === 'checklist' || tabId === 'fonts';
+  const hasHero = tabId === 'faq' || tabId === 'checklist' || tabId === 'fonts' || tabId === 'inspiration';
   mainHero.style.display = isFaq ? '' : 'none';
   menuToggle.style.visibility = isFaq ? '' : 'hidden';
   headerSearchBtn.style.display = 'none';
@@ -589,6 +590,7 @@ function switchTab(tabId) {
   // Tab-specific heroes
   if (checklistHero) checklistHero.style.display = tabId === 'checklist' ? '' : 'none';
   if (fontsHero) fontsHero.style.display = tabId === 'fonts' ? '' : 'none';
+  if (palettesHero) palettesHero.style.display = tabId === 'inspiration' ? '' : 'none';
 
   if (hasHero) {
     header.classList.remove('pinned');
@@ -762,8 +764,362 @@ function renderFontPairs() {
 
 renderFontPairs();
 
+/* === Palettes & Gradients === */
+function hexToRgb(hex) {
+  const n = parseInt(hex.replace('#', ''), 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+function rgbToHex(r, g, b) {
+  return '#' + [r, g, b].map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
+}
+
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  if (max === min) return { h: 0, s: 0, l: l * 100 };
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  let h;
+  if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+  else if (max === g) h = ((b - r) / d + 2) / 6;
+  else h = ((r - g) / d + 4) / 6;
+  return { h: h * 360, s: s * 100, l: l * 100 };
+}
+
+function hslToRgb(h, s, l) {
+  h /= 360; s /= 100; l /= 100;
+  if (s === 0) { const v = Math.round(l * 255); return { r: v, g: v, b: v }; }
+  const hue2rgb = (p, q, t) => {
+    if (t < 0) t += 1; if (t > 1) t -= 1;
+    if (t < 1/6) return p + (q - p) * 6 * t;
+    if (t < 1/2) return q;
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    return p;
+  };
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  return {
+    r: Math.round(hue2rgb(p, q, h + 1/3) * 255),
+    g: Math.round(hue2rgb(p, q, h) * 255),
+    b: Math.round(hue2rgb(p, q, h - 1/3) * 255)
+  };
+}
+
+function hexToHsl(hex) { const {r, g, b} = hexToRgb(hex); return rgbToHsl(r, g, b); }
+function hslToHex(h, s, l) { const {r, g, b} = hslToRgb(h, s, l); return rgbToHex(r, g, b); }
+
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+function normHue(h) { return ((h % 360) + 360) % 360; }
+function randRange(a, b) { return a + Math.random() * (b - a); }
+
+function luminance(hex) {
+  const {r, g, b} = hexToRgb(hex);
+  const [rs, gs, bs] = [r, g, b].map(v => {
+    v /= 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+}
+
+/* Harmony strategies */
+function analogous(h, s, l) {
+  return [
+    { h, s, l },
+    { h: normHue(h + 30 + randRange(-5, 5)), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
+    { h: normHue(h + 60 + randRange(-5, 5)), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
+    { h: normHue(h - 30 + randRange(-5, 5)), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
+    { h: normHue(h - 60 + randRange(-5, 5)), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) }
+  ];
+}
+
+function complementary(h, s, l) {
+  return [
+    { h, s, l },
+    { h: normHue(h + 180), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-10, 10), 25, 75) },
+    { h: normHue(h + randRange(20, 40)), s: clamp(s + randRange(-15, 5), 30, 95), l: clamp(l + randRange(-15, 15), 25, 75) },
+    { h: normHue(h + 180 + randRange(-30, -10)), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-10, 15), 25, 75) },
+    { h: normHue(h + randRange(-15, 15)), s: clamp(s - 15, 20, 90), l: clamp(l + 20, 30, 85) }
+  ];
+}
+
+function triadic(h, s, l) {
+  return [
+    { h, s, l },
+    { h: normHue(h + 120), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
+    { h: normHue(h + 240), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
+    { h: normHue(h + 60), s: clamp(s - 10, 25, 85), l: clamp(l + 15, 30, 80) },
+    { h: normHue(h + 300), s: clamp(s - 10, 25, 85), l: clamp(l - 10, 25, 70) }
+  ];
+}
+
+function splitComp(h, s, l) {
+  return [
+    { h, s, l },
+    { h: normHue(h + 150), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
+    { h: normHue(h + 210), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
+    { h: normHue(h + 30), s: clamp(s - 10, 25, 85), l: clamp(l + 12, 30, 80) },
+    { h: normHue(h - 30), s: clamp(s - 10, 25, 85), l: clamp(l - 10, 25, 70) }
+  ];
+}
+
+function shades(h, s, l) {
+  return [
+    { h, s: clamp(s + 5, 30, 95), l: clamp(l - 20, 15, 45) },
+    { h, s: clamp(s + 3, 30, 95), l: clamp(l - 10, 20, 55) },
+    { h, s, l },
+    { h, s: clamp(s - 5, 20, 90), l: clamp(l + 12, 45, 80) },
+    { h, s: clamp(s - 10, 15, 85), l: clamp(l + 25, 60, 90) }
+  ];
+}
+
+const HARMONY_STRATEGIES = [analogous, complementary, triadic, splitComp];
+
+function generatePalette(seedHex, mode) {
+  let h, s, l;
+  if (seedHex) {
+    ({h, s, l} = hexToHsl(seedHex));
+    if (s < 5) { s = 50; h = Math.random() * 360; }
+  } else {
+    h = Math.random() * 360;
+    s = randRange(45, 80);
+    l = randRange(40, 60);
+  }
+  let hslColors;
+  if (mode === 'shades') {
+    hslColors = shades(h, s, l);
+  } else {
+    const strategy = HARMONY_STRATEGIES[Math.floor(Math.random() * HARMONY_STRATEGIES.length)];
+    hslColors = strategy(h, s, l);
+  }
+  return hslColors.map(c => hslToHex(c.h, c.s, c.l));
+}
+
+let currentPalette = [];
+let currentPalMode = 'auto';
+
+function renderPalette(colors) {
+  currentPalette = colors;
+  const container = document.getElementById('pal-display');
+  container.innerHTML = '';
+  colors.forEach(hex => {
+    const swatch = document.createElement('div');
+    swatch.className = 'pal-swatch';
+    swatch.style.backgroundColor = hex;
+    const lum = luminance(hex);
+    const textColor = lum > 0.4 ? '#273043' : '#ffffff';
+
+    const label = document.createElement('span');
+    label.className = 'pal-swatch-hex';
+    label.style.color = textColor;
+    label.textContent = hex.toUpperCase();
+
+    const hint = document.createElement('span');
+    hint.className = 'pal-swatch-hint';
+    hint.style.color = textColor;
+    hint.textContent = 'Копировать';
+
+    swatch.appendChild(label);
+    swatch.appendChild(hint);
+    swatch.addEventListener('click', () => {
+      navigator.clipboard.writeText(hex.toUpperCase()).then(() => {
+        hint.textContent = 'Скопировано!';
+        setTimeout(() => { hint.textContent = 'Копировать'; }, 1500);
+      });
+    });
+    container.appendChild(swatch);
+  });
+}
+
+function getPalSeedColor() {
+  const input = document.getElementById('pal-seed-input');
+  let val = (input.value || '').trim();
+  if (val && !val.startsWith('#')) val = '#' + val;
+  if (/^#[0-9a-fA-F]{6}$/.test(val)) return val;
+  return null;
+}
+
+// Sub-tab switching
+document.getElementById('pal-tabs').addEventListener('click', (e) => {
+  const tab = e.target.closest('.pal-tab');
+  if (!tab) return;
+  document.querySelectorAll('.pal-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  document.querySelectorAll('.pal-subtab').forEach(p => p.classList.remove('active'));
+  document.getElementById('subtab-' + tab.dataset.subtab).classList.add('active');
+});
+
+// Mode segmented control
+document.getElementById('pal-mode-seg').addEventListener('click', (e) => {
+  const item = e.target.closest('.pal-seg-item');
+  if (!item) return;
+  document.querySelectorAll('.pal-seg-item').forEach(c => c.classList.remove('active'));
+  item.classList.add('active');
+  currentPalMode = item.dataset.mode;
+});
+
+// Generate button
+document.getElementById('pal-generate-btn').addEventListener('click', () => {
+  const seed = getPalSeedColor();
+  renderPalette(generatePalette(seed, currentPalMode));
+});
+
+// Sync color picker <-> text input (palette)
+function activatePickerWrap(picker) {
+  picker.closest('.pal-color-picker-wrap').classList.add('has-color');
+}
+document.getElementById('pal-color-picker').addEventListener('input', (e) => {
+  activatePickerWrap(e.target);
+  document.getElementById('pal-seed-input').value = e.target.value;
+});
+document.getElementById('pal-seed-input').addEventListener('input', (e) => {
+  let val = e.target.value.trim();
+  if (val && !val.startsWith('#')) val = '#' + val;
+  if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+    const picker = document.getElementById('pal-color-picker');
+    picker.value = val;
+    activatePickerWrap(picker);
+  }
+});
+
+// Copy all hex
+document.getElementById('pal-copy-btn').addEventListener('click', () => {
+  const text = currentPalette.map(c => c.toUpperCase()).join(', ');
+  navigator.clipboard.writeText(text).then(() => showToast('Палитра скопирована'));
+});
+
+// Share palette (canvas image + Web Share API)
+function generatePaletteImage(colors) {
+  const canvas = document.createElement('canvas');
+  const w = 1200, h = 630;
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  const swatchH = (h - 70) / colors.length;
+  colors.forEach((hex, i) => {
+    ctx.fillStyle = hex;
+    ctx.fillRect(0, i * swatchH, w, swatchH);
+    const lum = luminance(hex);
+    ctx.fillStyle = lum > 0.4 ? 'rgba(39,48,67,0.8)' : 'rgba(255,255,255,0.9)';
+    ctx.font = '600 28px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(hex.toUpperCase(), 40, i * swatchH + swatchH / 2);
+  });
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, h - 70, w, 70);
+  ctx.fillStyle = '#5a6478';
+  ctx.font = '500 22px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(colors.map(c => c.toUpperCase()).join('  ·  '), w / 2, h - 30);
+  return canvas;
+}
+
+document.getElementById('pal-share-btn').addEventListener('click', () => {
+  const canvas = generatePaletteImage(currentPalette);
+  const text = currentPalette.map(c => c.toUpperCase()).join(', ');
+
+  canvas.toBlob(async (blob) => {
+    if (navigator.share && navigator.canShare) {
+      const file = new File([blob], 'palette.png', { type: 'image/png' });
+      const shareData = { text: text, files: [file] };
+      if (navigator.canShare(shareData)) {
+        try { await navigator.share(shareData); } catch(e) {}
+        return;
+      }
+    }
+    if (navigator.share) {
+      try { await navigator.share({ text: text }); } catch(e) {}
+    } else {
+      navigator.clipboard.writeText(text).then(() => showToast('Палитра скопирована'));
+    }
+  }, 'image/png');
+});
+
+/* Gradient generator */
+function generateGradient(seedHex) {
+  const {h, s, l} = hexToHsl(seedHex);
+  const numStops = Math.random() > 0.4 ? 3 : 2;
+  const stops = [seedHex];
+  for (let i = 1; i < numStops; i++) {
+    const newH = normHue(h + randRange(25, 60) * (Math.random() > 0.5 ? 1 : -1));
+    const newS = clamp(s + randRange(-15, 15), 25, 95);
+    const newL = clamp(l + randRange(-20, 20), 25, 75);
+    stops.push(hslToHex(newH, newS, newL));
+  }
+  return stops;
+}
+
+let currentGradStops = [];
+
+function renderGradient(stops) {
+  currentGradStops = stops;
+  const css = 'linear-gradient(to right, ' + stops.join(', ') + ')';
+  document.getElementById('grad-preview').style.background = css;
+
+  const markers = document.getElementById('grad-markers');
+  markers.innerHTML = '';
+  stops.forEach(hex => {
+    const marker = document.createElement('div');
+    marker.className = 'grad-marker';
+    const dot = document.createElement('div');
+    dot.className = 'grad-marker-dot';
+    dot.style.backgroundColor = hex;
+    const label = document.createElement('span');
+    label.className = 'grad-marker-hex';
+    label.textContent = hex.toUpperCase();
+    marker.appendChild(dot);
+    marker.appendChild(label);
+    marker.addEventListener('click', () => {
+      navigator.clipboard.writeText(hex.toUpperCase()).then(() => {
+        label.textContent = 'Скопировано!';
+        setTimeout(() => { label.textContent = hex.toUpperCase(); }, 1500);
+      });
+    });
+    markers.appendChild(marker);
+  });
+}
+
+function getGradSeedColor() {
+  const input = document.getElementById('grad-seed-input');
+  let val = (input.value || '').trim();
+  if (val && !val.startsWith('#')) val = '#' + val;
+  if (/^#[0-9a-fA-F]{6}$/.test(val)) return val;
+  return document.getElementById('grad-color-picker').value;
+}
+
+document.getElementById('grad-generate-btn').addEventListener('click', () => {
+  renderGradient(generateGradient(getGradSeedColor()));
+});
+
+
+document.getElementById('grad-color-picker').addEventListener('input', (e) => {
+  activatePickerWrap(e.target);
+  document.getElementById('grad-seed-input').value = e.target.value;
+});
+document.getElementById('grad-seed-input').addEventListener('input', (e) => {
+  let val = e.target.value.trim();
+  if (val && !val.startsWith('#')) val = '#' + val;
+  if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+    const picker = document.getElementById('grad-color-picker');
+    picker.value = val;
+    activatePickerWrap(picker);
+  }
+});
+
+document.getElementById('grad-copy-btn').addEventListener('click', () => {
+  const text = currentGradStops.map(c => c.toUpperCase()).join(', ');
+  navigator.clipboard.writeText(text).then(() => showToast('Цвета скопированы'));
+});
+
+// Initial palette & gradient
+renderPalette(generatePalette(null, 'auto'));
+renderGradient(generateGradient('#a674fe'));
+
 /* === Init === */
 if (checklistHero) checklistHero.style.display = 'none';
 if (fontsHero) fontsHero.style.display = 'none';
+if (palettesHero) palettesHero.style.display = 'none';
 renderSidebarLinks();
 render();

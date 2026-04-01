@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ppt-kb-v8';
+const CACHE_NAME = 'ppt-kb-v23';
 const ASSETS = [
   './',
   './index.html',

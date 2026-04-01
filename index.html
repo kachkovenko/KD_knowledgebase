@@ -151,12 +151,86 @@
     <div class="tab-page" id="font-pairs-content"></div>
   </div><!-- /tab-fonts -->
 
-  <!-- === Tab: Inspiration === -->
+  <!-- === Tab: Palettes === -->
   <div class="tab-panel" id="tab-inspiration">
-    <div class="tab-page tab-page-standalone">
-      <div class="tab-placeholder">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="tab-placeholder-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <p class="tab-placeholder-text">Скоро здесь будет много&nbsp;интересного</p>
+    <section class="hero" id="hero-palettes">
+      <div class="hero-inner">
+        <h1>Палитры</h1>
+        <p>Генератор цветовых палитр и&nbsp;градиентов для&nbsp;презентаций</p>
+      </div>
+    </section>
+    <!-- Sub-tab switcher -->
+    <div class="pal-tabs-wrap">
+      <div class="pal-tabs" id="pal-tabs">
+        <button class="pal-tab active" data-subtab="palette">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="3" height="3"/><rect x="14" y="7" width="3" height="3"/><rect x="7" y="14" width="3" height="3"/><rect x="14" y="14" width="3" height="3"/></svg>
+          Палитра
+        </button>
+        <button class="pal-tab" data-subtab="gradient">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/></svg>
+          Градиент
+        </button>
+      </div>
+    </div>
+
+    <!-- Sub-tab: Palette -->
+    <div class="pal-subtab active" id="subtab-palette">
+      <div class="tab-page">
+        <div class="pal-section">
+          <div class="pal-controls">
+            <div class="pal-controls-main">
+              <div class="pal-seed-row">
+                <div class="pal-color-picker-wrap">
+                  <input type="color" id="pal-color-picker" class="pal-color-picker" value="#ffffff">
+                </div>
+                <input type="text" id="pal-seed-input" class="pal-seed-input" placeholder="Свой цвет" maxlength="7">
+              </div>
+              <div class="pal-mode-seg" id="pal-mode-seg">
+                <button class="pal-seg-item active" data-mode="auto">Авто</button>
+                <button class="pal-seg-item" data-mode="shades">Оттенки</button>
+              </div>
+              <button class="pal-generate-btn" id="pal-generate-btn">Создать</button>
+            </div>
+          </div>
+          <div class="pal-display" id="pal-display"></div>
+          <div class="pal-actions">
+            <button class="pal-action-btn" id="pal-share-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+              Поделиться
+            </button>
+            <button class="pal-action-btn" id="pal-copy-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Скопировать HEX
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sub-tab: Gradient -->
+    <div class="pal-subtab" id="subtab-gradient">
+      <div class="tab-page">
+        <div class="pal-section">
+          <div class="pal-controls">
+            <div class="pal-controls-main">
+              <div class="pal-seed-row">
+                <div class="pal-color-picker-wrap">
+                  <input type="color" id="grad-color-picker" class="pal-color-picker" value="#ffffff">
+                </div>
+                <input type="text" id="grad-seed-input" class="pal-seed-input" placeholder="Свой цвет" maxlength="7">
+              </div>
+              <button class="pal-generate-btn" id="grad-generate-btn">Создать</button>
+            </div>
+          </div>
+          <div class="grad-preview" id="grad-preview"></div>
+          <div class="grad-markers" id="grad-markers"></div>
+          <div class="pal-actions">
+            <button class="pal-action-btn" id="grad-copy-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Скопировать HEX
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div><!-- /tab-inspiration -->
@@ -208,8 +282,8 @@
       <span>Шрифты</span>
     </button>
     <button class="tab-bar-item" data-tab="inspiration">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      <span>Вдохновение</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10c0 2-1 3.5-3 3.5h-2.5c-1.5 0-2.5 1-2.5 2.5 0 .5.5 1.5.5 2 0 1.5-1 2-2.5 2z"/><circle cx="7.5" cy="11.5" r="1.5"/><circle cx="12" cy="7.5" r="1.5"/><circle cx="16.5" cy="11.5" r="1.5"/></svg>
+      <span>Палитры</span>
     </button>
   </nav>
 
