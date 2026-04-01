@@ -1,4 +1,4 @@
-const APP_VERSION = '1.1.17';
+const APP_VERSION = '1.1.18';
 
 /* === FAQ Data === */
 const faqData = [
@@ -1035,6 +1035,9 @@ document.getElementById('pal-share-btn').addEventListener('click', () => {
 
 /* Gradient generator */
 function generateGradient(seedHex) {
+  if (!seedHex) {
+    seedHex = hslToHex(Math.random() * 360, randRange(45, 80), randRange(40, 60));
+  }
   const {h, s, l} = hexToHsl(seedHex);
   const numStops = Math.random() > 0.4 ? 3 : 2;
   const stops = [seedHex];
@@ -1078,7 +1081,10 @@ function renderGradient(stops) {
 }
 
 function getGradSeedColor() {
-  return document.getElementById('grad-color-picker').value;
+  const picker = document.getElementById('grad-color-picker');
+  const wrap = picker.closest('.pal-color-picker-wrap');
+  if (wrap.classList.contains('has-color')) return picker.value;
+  return null;
 }
 
 document.getElementById('grad-generate-btn').addEventListener('click', () => {
