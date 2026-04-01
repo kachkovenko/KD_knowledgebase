@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ppt-kb-v27';
+const CACHE_NAME = 'ppt-kb-v28';
 const ASSETS = [
   './',
   './index.html',
@@ -9,7 +9,11 @@ const ASSETS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.all(ASSETS.map(url =>
+        fetch(url, { cache: 'reload' }).then(res => cache.put(url, res))
+      ))
+    )
   );
   self.skipWaiting();
 });
