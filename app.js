@@ -1,4 +1,4 @@
-const APP_VERSION = '1.1.14';
+const APP_VERSION = '1.1.15';
 
 /* === FAQ Data === */
 const faqData = [
@@ -933,10 +933,10 @@ function renderPalette(colors) {
 }
 
 function getPalSeedColor() {
-  const input = document.getElementById('pal-seed-input');
-  let val = (input.value || '').trim();
-  if (val && !val.startsWith('#')) val = '#' + val;
-  if (/^#[0-9a-fA-F]{6}$/.test(val)) return val;
+  const wrap = document.getElementById('pal-color-picker').closest('.pal-color-picker-wrap');
+  if (wrap.classList.contains('has-color')) {
+    return document.getElementById('pal-color-picker').value;
+  }
   return null;
 }
 
@@ -965,22 +965,12 @@ document.getElementById('pal-generate-btn').addEventListener('click', () => {
   renderPalette(generatePalette(seed, currentPalMode));
 });
 
-// Sync color picker <-> text input (palette)
+// Color picker activation
 function activatePickerWrap(picker) {
   picker.closest('.pal-color-picker-wrap').classList.add('has-color');
 }
 document.getElementById('pal-color-picker').addEventListener('input', (e) => {
   activatePickerWrap(e.target);
-  document.getElementById('pal-seed-input').value = e.target.value;
-});
-document.getElementById('pal-seed-input').addEventListener('input', (e) => {
-  let val = e.target.value.trim();
-  if (val && !val.startsWith('#')) val = '#' + val;
-  if (/^#[0-9a-fA-F]{6}$/.test(val)) {
-    const picker = document.getElementById('pal-color-picker');
-    picker.value = val;
-    activatePickerWrap(picker);
-  }
 });
 
 // Copy all hex
@@ -1082,10 +1072,6 @@ function renderGradient(stops) {
 }
 
 function getGradSeedColor() {
-  const input = document.getElementById('grad-seed-input');
-  let val = (input.value || '').trim();
-  if (val && !val.startsWith('#')) val = '#' + val;
-  if (/^#[0-9a-fA-F]{6}$/.test(val)) return val;
   return document.getElementById('grad-color-picker').value;
 }
 
@@ -1093,19 +1079,8 @@ document.getElementById('grad-generate-btn').addEventListener('click', () => {
   renderGradient(generateGradient(getGradSeedColor()));
 });
 
-
 document.getElementById('grad-color-picker').addEventListener('input', (e) => {
   activatePickerWrap(e.target);
-  document.getElementById('grad-seed-input').value = e.target.value;
-});
-document.getElementById('grad-seed-input').addEventListener('input', (e) => {
-  let val = e.target.value.trim();
-  if (val && !val.startsWith('#')) val = '#' + val;
-  if (/^#[0-9a-fA-F]{6}$/.test(val)) {
-    const picker = document.getElementById('grad-color-picker');
-    picker.value = val;
-    activatePickerWrap(picker);
-  }
 });
 
 document.getElementById('grad-copy-btn').addEventListener('click', () => {
