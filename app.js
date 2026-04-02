@@ -1,4 +1,4 @@
-const APP_VERSION = '1.1.19';
+const APP_VERSION = '1.1.20';
 
 /* === FAQ Data === */
 const faqData = [
@@ -829,54 +829,63 @@ function luminance(hex) {
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
 }
 
-/* Harmony strategies */
+/* Harmony strategies — only hue is inherited from seed; S and L are
+   distributed across levels so palettes stay vibrant for any input. */
+function vS() { return randRange(58, 88); }
+function vL(tier) {
+  const tiers = { dark: [25, 38], mid: [42, 58], bright: [60, 72], light: [74, 86] };
+  const [a, b] = tiers[tier];
+  return randRange(a, b);
+}
+function jit(deg) { return randRange(-deg, deg); }
+
 function analogous(h, s, l) {
   return [
     { h, s, l },
-    { h: normHue(h + 30 + randRange(-5, 5)), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
-    { h: normHue(h + 60 + randRange(-5, 5)), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
-    { h: normHue(h - 30 + randRange(-5, 5)), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
-    { h: normHue(h - 60 + randRange(-5, 5)), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) }
+    { h: normHue(h + 30 + jit(5)),  s: vS(), l: vL('bright') },
+    { h: normHue(h + 60 + jit(5)),  s: vS(), l: vL('light') },
+    { h: normHue(h - 30 + jit(5)),  s: vS(), l: vL('mid') },
+    { h: normHue(h - 60 + jit(5)),  s: vS(), l: vL('dark') }
   ];
 }
 
 function complementary(h, s, l) {
   return [
     { h, s, l },
-    { h: normHue(h + 180), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-10, 10), 25, 75) },
-    { h: normHue(h + randRange(20, 40)), s: clamp(s + randRange(-15, 5), 30, 95), l: clamp(l + randRange(-15, 15), 25, 75) },
-    { h: normHue(h + 180 + randRange(-30, -10)), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-10, 15), 25, 75) },
-    { h: normHue(h + randRange(-15, 15)), s: clamp(s - 15, 20, 90), l: clamp(l + 20, 30, 85) }
+    { h: normHue(h + 180 + jit(8)),          s: vS(), l: vL('bright') },
+    { h: normHue(h + randRange(20, 40)),      s: vS(), l: vL('light') },
+    { h: normHue(h + 180 + randRange(-30, -10)), s: vS(), l: vL('mid') },
+    { h: normHue(h + jit(15)),                s: vS(), l: vL('dark') }
   ];
 }
 
 function triadic(h, s, l) {
   return [
     { h, s, l },
-    { h: normHue(h + 120), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
-    { h: normHue(h + 240), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
-    { h: normHue(h + 60), s: clamp(s - 10, 25, 85), l: clamp(l + 15, 30, 80) },
-    { h: normHue(h + 300), s: clamp(s - 10, 25, 85), l: clamp(l - 10, 25, 70) }
+    { h: normHue(h + 120 + jit(8)), s: vS(), l: vL('bright') },
+    { h: normHue(h + 240 + jit(8)), s: vS(), l: vL('mid') },
+    { h: normHue(h + 60 + jit(8)),  s: vS(), l: vL('light') },
+    { h: normHue(h + 300 + jit(8)), s: vS(), l: vL('dark') }
   ];
 }
 
 function splitComp(h, s, l) {
   return [
     { h, s, l },
-    { h: normHue(h + 150), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
-    { h: normHue(h + 210), s: clamp(s + randRange(-10, 10), 30, 95), l: clamp(l + randRange(-8, 8), 25, 75) },
-    { h: normHue(h + 30), s: clamp(s - 10, 25, 85), l: clamp(l + 12, 30, 80) },
-    { h: normHue(h - 30), s: clamp(s - 10, 25, 85), l: clamp(l - 10, 25, 70) }
+    { h: normHue(h + 150 + jit(8)), s: vS(), l: vL('bright') },
+    { h: normHue(h + 210 + jit(8)), s: vS(), l: vL('mid') },
+    { h: normHue(h + 30 + jit(8)),  s: vS(), l: vL('light') },
+    { h: normHue(h - 30 + jit(8)),  s: vS(), l: vL('dark') }
   ];
 }
 
 function shades(h, s, l) {
   return [
-    { h, s: clamp(s + 5, 30, 95), l: clamp(l - 20, 15, 45) },
-    { h, s: clamp(s + 3, 30, 95), l: clamp(l - 10, 20, 55) },
+    { h: normHue(h + jit(3)), s: clamp(s + 5, 40, 95),  l: vL('dark') },
+    { h: normHue(h + jit(3)), s: clamp(s + 3, 40, 95),  l: vL('mid') },
     { h, s, l },
-    { h, s: clamp(s - 5, 20, 90), l: clamp(l + 12, 45, 80) },
-    { h, s: clamp(s - 10, 15, 85), l: clamp(l + 25, 60, 90) }
+    { h: normHue(h + jit(3)), s: clamp(s - 5, 35, 90),  l: vL('bright') },
+    { h: normHue(h + jit(3)), s: clamp(s - 10, 30, 85), l: vL('light') }
   ];
 }
 
