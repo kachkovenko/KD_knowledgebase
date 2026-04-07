@@ -1,4 +1,4 @@
-const APP_VERSION = '1.1.20';
+const APP_VERSION = '1.1.21';
 
 /* === FAQ Data === */
 const faqData = [
